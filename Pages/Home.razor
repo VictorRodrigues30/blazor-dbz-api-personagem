@@ -1,0 +1,55 @@
+﻿@inject HttpClient Http
+@page "/"
+
+<PageTitle>Personagens DBZ</PageTitle>
+
+<h1>Informações do Personagem</h1>
+<br />
+<h3>Personagens Disponíveis</h3>
+<p>
+<strong>1</strong> - Goku<br />
+<strong>2</strong> - Vegeta<br />
+<strong>3</strong> - Piccolo<br />
+<strong>4</strong> - Bulma<br />
+<strong>5</strong> - Frieza<br />
+<strong>6</strong> - Zarbon<br />
+<strong>7</strong> - Dodoria<br />
+<strong>8</strong> - Capitão Ginyu<br />
+<strong>9</strong> - Cell<br />
+<strong>10</strong>- Gohan
+</p>
+
+<input type="number" @bind="idPersonagem" placeholder="Digite o ID do personagem  (1 a 10)" style="width: 280px;"/>
+
+<button @onclick="BuscarPersonagem">Buscar Personagem</button>
+
+@if (personagem != null)
+{
+    <div style="margin-top: 20px;">
+        <p><strong>Nome:</strong> @personagem.Name</p>
+        <p><strong>Planeta:</strong> @personagem.OriginPlanet.Name</p>
+    
+        <p><strong>Transformações:</strong></p>
+         <ul>
+            @foreach (Transformacao transformacao in personagem.Transformations)
+            {
+                <li>@transformacao.Name</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private int? idPersonagem;
+    private Personagem? personagem;
+
+    private async Task BuscarPersonagem()
+    {
+        if (!idPersonagem.HasValue)
+        return;
+
+        string url = $"https://dragonball-api.com/api/characters/{idPersonagem}";
+
+        personagem = await Http.GetFromJsonAsync<Personagem>(url);
+    }
+}
